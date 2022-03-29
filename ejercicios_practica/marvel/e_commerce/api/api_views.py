@@ -50,6 +50,8 @@ Ejemplo de header:
 '''
 # NOTE: APIs genéricas:
 
+
+# COMIC API VIEWS:
 class GetComicAPIView(ListAPIView):
     __doc__ = f'''{mensaje_headder}
     `[METODO GET]`
@@ -59,6 +61,7 @@ class GetComicAPIView(ListAPIView):
     queryset = Comic.objects.all()
     serializer_class = ComicSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
+    
 
 
 
@@ -125,6 +128,101 @@ class GetOneComicAPIView(ListAPIView):
             return queryset
         except Exception as error:
             return {'error': f'Ha ocurrido la siguiente excepción: {error}'}
+        
+        
+# WISHLIST API VIEWS:
+
+class GetWishListAPIView(ListAPIView):
+    __doc__ = f'''{mensaje_headder}
+    `[METODO GET]`
+    Esta vista de API nos devuelve una lista de todos los comics presentes 
+    en la base de datos.
+    '''
+    queryset = WishList.objects.all()
+    serializer_class = WishListSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+
+
+class PostWishListAPIView(CreateAPIView):
+    __doc__ = f'''{mensaje_headder}
+    `[METODO POST]`
+    Esta vista de API nos permite hacer un insert en la base de datos.
+    '''
+    queryset = WishList.objects.all()
+    serializer_class = WishListSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+class ListCreateWishListAPIView(ListCreateAPIView):
+    __doc__ = f'''{mensaje_headder}
+    `[METODO GET-POST]`
+    Esta vista de API nos devuelve una lista de todos los comics presentes 
+    en la base de datos.
+    Tambien nos permite hacer un insert en la base de datos.
+    '''
+    queryset = WishList.objects.all()
+    serializer_class = WishListSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+class RetrieveUpdateWishListAPIView(RetrieveUpdateAPIView):
+    __doc__ = f'''{mensaje_headder}
+    `[METODO GET-PUT-PATCH]`
+    Esta vista de API nos permite actualizar un registro, o simplemente visualizarlo.
+    '''
+    queryset = WishList.objects.all()
+    serializer_class = WishListSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+
+class DestroyWishListAPIView(DestroyAPIView):
+    __doc__ = f'''{mensaje_headder}
+    `[METODO DELETE]`
+    Esta vista de API nos devuelve una lista de todos los comics presentes 
+    en la base de datos.
+    '''
+    queryset = WishList.objects.all()
+    serializer_class = WishListSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+# NOTE: APIs MIXTAS:
+
+class GetUserWishListAPIView(ListAPIView):
+    __doc__ = f'''{mensaje_headder}
+    `[METODO GET]`
+    Esta vista de API nos devuelve las wishlists de un user en particular de la base de datos.
+    '''
+    serializer_class = WishListSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get_queryset(self):
+        '''
+        Sobrescribimos la función `get_queryset` para poder filtrar el request 
+        por medio de la url. En este caso traemos de la url por medio de `self.kwargs` 
+        el parámetro `user_id` y con él realizamos una query para traer 
+        las wishlists del user con el ID solicitado.  
+        '''
+        try:
+
+            username = self.kwargs['username']
+            user = User.objects.filter(username=username)  
+            
+            wish_list = WishList.objects.filter(user_id=user.first(), favorite=True)
+            wish_ids = [wish.comic_id for wish in wish_list]
+
+            comic_obj = []
+
+            for id in wish_ids:
+                comic = Comic.objects.filter(id=f'{id}').first()
+                comic_obj.append(comic)
+               
+            return comic_obj
+        
+        except Exception as error:
+            return {'error': f'Ha ocurrido la siguiente excepción: {error}'}
+
+
+
+# USER API VIEWS:
 
 class LoginUserAPIView(APIView):
     '''
@@ -188,5 +286,5 @@ class LoginUserAPIView(APIView):
             user_data['error_message'] = error
             return Response(user_data)
 
-# TODO: Agregar las vistas genericas que permitan realizar un CRUD del modelo de wish-list.
+
 # TODO: Crear una vista generica modificada para traer todos los comics que tiene un usuario.

@@ -10,8 +10,8 @@ import hashlib
 
 # NOTE: Declaramos las variables que tienen que ver con la API KEY de Marvel:
 
-PUBLIC_KEY = '58ee40376f7c10e99f440f5e3abd2caa'
-PRIVATE_KEY = '2c0373e00d85edb4560f68ddc2094014e8694f90'
+PUBLIC_KEY = '9750bf1fd6cc4cf8d384f161073cb30a'
+PRIVATE_KEY = 'bf2ac218bd3d613b31ca7489efb06c58ee3794b7'
 TS = 1
 TO_HASH = str(TS)+PRIVATE_KEY+PUBLIC_KEY
 HASHED = hashlib.md5(TO_HASH.encode())

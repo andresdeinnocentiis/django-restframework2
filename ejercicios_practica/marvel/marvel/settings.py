@@ -75,7 +75,7 @@ ROOT_URLCONF = 'marvel.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR,'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -98,8 +98,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'marvel_db',        # POSTGRES_DB
-        'USER' : 'inove_user',      # POSTGRES_USER
-        'PASSWORD' : '123Marvel!',  # POSTGRES_PASSWORD
+        'USER' : 'andres',      # POSTGRES_USER
+        'PASSWORD' : 'andres.29',  # POSTGRES_PASSWORD
         'HOST':'db',                # Nombre del servicio
         'PORT': '5432'              # Número del puerto
     }
